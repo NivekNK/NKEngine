@@ -1,0 +1,9 @@
+# Binaries
+bin/
+
+# Build
+out/
+
+# Visual Studio files and folder
+.vscode/
+.vs/
