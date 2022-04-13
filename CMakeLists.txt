@@ -12,3 +12,4 @@ endif()
 project ("NKEngine")
 
 add_subdirectory ("HazelNK")
+add_subdirectory("Sandbox")

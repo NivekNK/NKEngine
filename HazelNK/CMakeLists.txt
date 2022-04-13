@@ -16,6 +16,8 @@ endif()
 file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS
     "src/*.h"
     "src/*.cpp"
+    "src/Hazel/*.h"
+    "src/Hazel/*.cpp"
 )
 
 add_library(HazelNK SHARED ${SOURCES})
@@ -23,4 +25,5 @@ add_library(HazelNK SHARED ${SOURCES})
 target_include_directories(HazelNK
 PUBLIC
     src
+    src/Hazel
 )

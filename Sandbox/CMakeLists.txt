@@ -1,6 +1,6 @@
-project(Sandbox)
+project("Sandbox")
 
-add_executable(Sandbox src/NKEngine.h src/NKEngine.cpp)
+add_executable(Sandbox src/SandboxApp.cpp)
 
 target_compile_definitions(Sandbox PRIVATE
     $<$<CONFIG:Debug>:NK_DEBUG>
