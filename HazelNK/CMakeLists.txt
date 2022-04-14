@@ -33,6 +33,8 @@ target_link_libraries(HazelNK PUBLIC
     spdlog::spdlog_header_only
 )
 
+target_precompile_headers(HazelNK PUBLIC src/nkpch.h)
+
 target_include_directories(HazelNK
 PUBLIC
     src

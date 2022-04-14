@@ -1,3 +1,5 @@
+#include "nkpch.h"
+
 #include "Application.h"
 
 #include "Hazel/Log.h"
