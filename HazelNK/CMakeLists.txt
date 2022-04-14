@@ -15,10 +15,15 @@ endif()
 
 add_subdirectory(vendor/fmt)
 add_subdirectory(vendor/spdlog)
+add_subdirectory(vendor/eventpp)
 
-file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS
+file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS 
+    "src/*.h"
     "src/*.cpp"
-    "src/Hazel/*.cpp"
+    "src/Hazel/*.h"
+	"src/Hazel/*.cpp"
+    "src/Hazel/Events/*.h"
+    "src/Hazel/Events/*.cpp"
 )
 
 add_library(HazelNK SHARED ${SOURCES})
@@ -36,11 +41,10 @@ PUBLIC
 	# Libraries
 	vendor/fmt/include
     vendor/spdlog/include
+	vendor/eventpp/include
 )
 
 target_include_directories(spdlog
 PRIVATE
     vendor/fmt/include
 )
-
-target_compile_definitions(spdlog PUBLIC SPDLOG_FMT_EXTERNAL)

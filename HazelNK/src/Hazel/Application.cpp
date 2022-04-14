@@ -1,5 +1,8 @@
 #include "Application.h"
 
+#include "Hazel/Log.h"
+#include "Hazel/Events/ApplicationEvent.h"
+
 namespace nk
 {
 	Application::Application()
@@ -12,6 +15,9 @@ namespace nk
 
 	void Application::Run()
 	{
+		const WindowResizeEvent e(1200, 700);
+		DebugTrace(e);
+
 		while (true);
 	}
 }

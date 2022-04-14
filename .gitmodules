@@ -4,3 +4,6 @@
 [submodule "HazelNK/vendor/fmt"]
 	path = HazelNK/vendor/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "HazelNK/vendor/eventpp"]
+	path = HazelNK/vendor/eventpp
+	url = https://github.com/wqking/eventpp.git
