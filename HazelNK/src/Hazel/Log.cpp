@@ -1,7 +1,6 @@
 #include "Log.h"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
-#include "spdlog/details/os-inl.h"
 
 namespace nk
 {

@@ -2,6 +2,9 @@
 
 #include "Hazel/Core.h"
 
+#define SPDLOG_LEVEL_NAMES { "Trace", "Debug", "Info", "Warning", "Error", "Fatal", "Off" }
+#define SPDLOG_SHORT_LEVEL_NAMES { "T", "D", "I", "W", "E", "F", "O" }
+
 #include <spdlog/spdlog.h>
 
 namespace nk

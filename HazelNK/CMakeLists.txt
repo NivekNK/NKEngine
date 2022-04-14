@@ -42,3 +42,5 @@ target_include_directories(spdlog
 PRIVATE
     vendor/fmt/include
 )
+
+target_compile_definitions(spdlog PUBLIC SPDLOG_FMT_EXTERNAL)
