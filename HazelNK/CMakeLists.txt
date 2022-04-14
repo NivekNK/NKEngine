@@ -13,17 +13,32 @@ if (WIN32)
     )
 endif()
 
+add_subdirectory(vendor/fmt)
+add_subdirectory(vendor/spdlog)
+
 file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS
-    "src/*.h"
     "src/*.cpp"
-    "src/Hazel/*.h"
     "src/Hazel/*.cpp"
 )
 
 add_library(HazelNK SHARED ${SOURCES})
 
+target_link_libraries(HazelNK PUBLIC
+	fmt::fmt
+    spdlog::spdlog_header_only
+)
+
 target_include_directories(HazelNK
 PUBLIC
     src
     src/Hazel
+    
+	# Libraries
+	vendor/fmt/include
+    vendor/spdlog/include
+)
+
+target_include_directories(spdlog
+PRIVATE
+    vendor/fmt/include
 )
