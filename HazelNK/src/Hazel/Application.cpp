@@ -24,15 +24,37 @@ namespace nk
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			for (Layer* layer : m_LayerStack)
+				layer->OnUpdate();
+
 			m_Window->OnUpdate();
 		}
 	}
 
 	void Application::OnEvent(Event& event)
 	{
-		DebugCoreInfo(event);
-
 		m_Dispatcher.Dispatch<WindowCloseEvent>(event);
+
+		//DebugCoreInfo(event);
+
+		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();)
+		{
+			if (event.Handled)
+				break;
+
+			(*--it)->OnEvent(event);
+		}
+	}
+
+	void Application::PushLayer(Layer* layer)
+	{
+		m_LayerStack.PushLayer(layer);
+	}
+
+	void Application::PushOverlay(Layer* overlay)
+	{
+		m_LayerStack.PopOverlay(overlay);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& event)

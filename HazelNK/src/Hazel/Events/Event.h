@@ -72,7 +72,7 @@ namespace nk
 			return m_Dispatcher.appendListener(T::GetStaticType(), [callback](Event& event, const EventType _)
 			{
 				auto e = dynamic_cast<T&>(event);
-				e.Handled = callback(e);
+				event.Handled = callback(e);
 			});
 		}
 
