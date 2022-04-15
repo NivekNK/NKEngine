@@ -45,7 +45,6 @@ namespace nk
 		[[nodiscard]] bool IsInCategory(const EventCategory category) const { return GetCategoryFlags() & category; }
 	};
 
-	template<typename E>
 	class EventDispatcher
 	{
 	public:
@@ -60,28 +59,46 @@ namespace nk
 			}
 		};
 
-		using Dispatcher = eventpp::EventDispatcher<EventType, void(E&, EventType), EventPolicies>;
-		using Handle = typename Dispatcher::Handle;
-		using Callback = typename Dispatcher::Callback;
+		using Dispatcher = eventpp::EventDispatcher<EventType, void(Event&, EventType), EventPolicies>;
+
+		template <typename T, typename = std::enable_if_t<std::is_base_of_v<Event, T>, T>>
+		using Callback = std::function<bool(T&)>;
 
 		EventDispatcher() = default;
 
-		Handle AddListener(const EventType eventType, const Callback& callback)
+		template <typename T, typename = std::enable_if_t<std::is_base_of_v<Event, T>, T>>
+		Dispatcher::Handle AddListener(const Callback<T>& callback)
 		{
-			return m_Dispatcher.appendListener(eventType, callback);
+			return m_Dispatcher.appendListener(T::GetStaticType(), [callback](Event& event, const EventType _)
+			{
+				auto e = dynamic_cast<T&>(event);
+				e.Handled = callback(e);
+			});
 		}
 
-		bool RemoveListener(const EventType eventType, const Handle handle)
+		bool RemoveListener(const EventType eventType, const Dispatcher::Handle& handle)
 		{
 			return m_Dispatcher.removeListener(eventType, handle);
 		}
 
+		template <typename T, typename = std::enable_if_t<std::is_base_of_v<Event, T>, T>>
+		bool RemoveListener(const Dispatcher::Handle& handle)
+		{
+			return m_Dispatcher.removeListener(T::GetStaticType(), handle);
+		}
+
 		Dispatcher GetDispatcher() const { return m_Dispatcher; }
 
-		void Dispatch(E& event) { m_Dispatcher.dispatch(event, event.GetEventType()); }
+		void Dispatch(Event& event, const EventType eventType) const { m_Dispatcher.dispatch(event, eventType); }
 
-		template<typename... Args>
-		void Dispatch(E& event, Args&&... args) { m_Dispatcher.dispatch(event, args...); }
+		template <typename T, typename = std::enable_if_t<std::is_base_of_v<Event, T>, T>>
+		void Dispatch(T& event, const EventType eventType) const { m_Dispatcher.dispatch(event, eventType); }
+
+		template <typename T, typename = std::enable_if_t<std::is_base_of_v<Event, T>, T>>
+		void Dispatch(T& event) const { m_Dispatcher.dispatch(event, event.GetEventType()); }
+
+		template <typename T, typename = std::enable_if_t<std::is_base_of_v<Event, T>, T>>
+		void Dispatch(Event& event) const { m_Dispatcher.dispatch(event, T::GetStaticType()); }
 	private:
 		Dispatcher m_Dispatcher;
 	};
