@@ -21,7 +21,9 @@ add_subdirectory(vendor/fmt)
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/eventpp)
 add_subdirectory(vendor/glad2)
+add_subdirectory(vendor/Vulkan-Headers)
 add_subdirectory(vendor/GLFW)
+add_subdirectory(vendor/ImGui)
 
 file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS 
     "src/*.h"
@@ -30,6 +32,10 @@ file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS
 	"src/Hazel/*.cpp"
     "src/Hazel/Events/*.h"
     "src/Hazel/Events/*.cpp"
+    "src/Hazel/ImGui/*.h"
+    "src/Hazel/ImGui/*.cpp"
+	"src/Platform/OpenGL/*.h"
+    "src/Platform/OpenGL/*.cpp"
     "src/Platform/Windows/*.h"
     "src/Platform/Windows/*.cpp"
 )
@@ -41,7 +47,9 @@ PUBLIC
 	fmt::fmt
     spdlog::spdlog_header_only
 	glad
+	Vulkan::Headers
     glfw
+	ImGui
 )
 
 target_precompile_headers(HazelNK PUBLIC src/nkpch.h)
@@ -56,8 +64,10 @@ PUBLIC
 	vendor/fmt/include
     vendor/spdlog/include
 	vendor/eventpp/include
+    vendor/ImGui/imgui
 PRIVATE
     vendor/glad2/include
+    vendor/Vulkan-Headers/include
     vendor/GLFW/include
 )
 

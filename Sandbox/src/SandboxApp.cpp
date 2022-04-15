@@ -22,6 +22,7 @@ public:
 	Sandbox()
 	{
 		PushLayer(new ExampleLayer());
+		PushOverlay(new nk::ImGuiLayer());
 	}
 
 	virtual ~Sandbox() override = default;

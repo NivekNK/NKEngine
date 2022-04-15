@@ -2,6 +2,8 @@
 
 #include "WindowsWindow.h"
 
+#ifdef NK_OPENGL
+
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/KeyEvent.h"
@@ -181,3 +183,4 @@ namespace nk
 		return m_Data.VSync;
 	}
 }
+#endif

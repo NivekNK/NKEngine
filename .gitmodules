@@ -10,3 +10,9 @@
 [submodule "HazelNK/vendor/GLFW"]
 	path = HazelNK/vendor/GLFW
 	url = https://github.com/glfw/glfw.git
+[submodule "HazelNK/vendor/Vulkan-Headers"]
+	path = HazelNK/vendor/Vulkan-Headers
+	url = https://github.com/KhronosGroup/Vulkan-Headers.git
+[submodule "HazelNK/vendor/ImGui/imgui"]
+	path = HazelNK/vendor/ImGui/imgui
+	url = https://github.com/ocornut/imgui.git
