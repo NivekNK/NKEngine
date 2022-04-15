@@ -1,10 +1,15 @@
 ﻿#include "nkpch.h"
 
-#include "WindowsWindowOpenGL.h"
+#include "WindowsWindow.h"
 
 #include "Hazel/Events/ApplicationEvent.h"
 #include "Hazel/Events/MouseEvent.h"
 #include "Hazel/Events/KeyEvent.h"
+
+#define GLFW_INCLUDE_NONE
+
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 namespace nk
 {
@@ -17,20 +22,20 @@ namespace nk
 
 	Window* Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindowOpenGL(props);
+		return new WindowsWindow(props);
 	}
 
-	WindowsWindowOpenGL::WindowsWindowOpenGL(const WindowProps& props)
+	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
 		Init(props);
 	}
 
-	WindowsWindowOpenGL::~WindowsWindowOpenGL()
+	WindowsWindow::~WindowsWindow()
 	{
 		Shutdown();
 	}
 
-	void WindowsWindowOpenGL::Init(const WindowProps& props)
+	void WindowsWindow::Init(const WindowProps& props)
 	{
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -49,6 +54,8 @@ namespace nk
 
 		m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_Window);
+		const int version = gladLoadGL(glfwGetProcAddress);
+		NK_CORE_ASSERT(version, "Failed to initialize Glad!")
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 
@@ -148,18 +155,18 @@ namespace nk
 		});
 	}
 
-	void WindowsWindowOpenGL::Shutdown()
+	void WindowsWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
 	}
 
-	void WindowsWindowOpenGL::OnUpdate()
+	void WindowsWindow::OnUpdate()
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
 	}
 
-	void WindowsWindowOpenGL::SetVSync(const bool enabled)
+	void WindowsWindow::SetVSync(const bool enabled)
 	{
 		if (enabled)
 			glfwSwapInterval(1);
@@ -169,7 +176,7 @@ namespace nk
 		m_Data.VSync = enabled;
 	}
 
-	bool WindowsWindowOpenGL::IsVSync() const
+	bool WindowsWindow::IsVSync() const
 	{
 		return m_Data.VSync;
 	}

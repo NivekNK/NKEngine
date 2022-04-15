@@ -20,6 +20,7 @@ endif()
 add_subdirectory(vendor/fmt)
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/eventpp)
+add_subdirectory(vendor/glad2)
 add_subdirectory(vendor/GLFW)
 
 file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS 
@@ -35,14 +36,12 @@ file(GLOB SOURCES CMAKE_CONFIGURE_DEPENDS
 
 add_library(HazelNK SHARED ${SOURCES})
 
-find_package(OpenGL REQUIRED)
-
 target_link_libraries(HazelNK
 PUBLIC
 	fmt::fmt
     spdlog::spdlog_header_only
+	glad
     glfw
-    OpenGL::GL
 )
 
 target_precompile_headers(HazelNK PUBLIC src/nkpch.h)
@@ -58,6 +57,7 @@ PUBLIC
     vendor/spdlog/include
 	vendor/eventpp/include
 PRIVATE
+    vendor/glad2/include
     vendor/GLFW/include
 )
 

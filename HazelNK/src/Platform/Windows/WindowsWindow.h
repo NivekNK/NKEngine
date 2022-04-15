@@ -2,15 +2,15 @@
 
 #include "Hazel/Window.h"
 
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 
 namespace nk
 {
-	class WindowsWindowOpenGL : public Window
+	class WindowsWindow : public Window
 	{
 	public:
-		explicit WindowsWindowOpenGL(const WindowProps& props);
-		virtual ~WindowsWindowOpenGL() override;
+		explicit WindowsWindow(const WindowProps& props);
+		virtual ~WindowsWindow() override;
 
 		virtual void OnUpdate() override;
 
