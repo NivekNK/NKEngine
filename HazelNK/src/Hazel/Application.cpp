@@ -2,7 +2,7 @@
 
 #include "Application.h"
 
-//#include <glad/gl.h>
+#include <glad/gl.h>
 
 namespace nk
 {
@@ -27,8 +27,8 @@ namespace nk
 	{
 		while (m_Running)
 		{
-			//glClearColor(1, 0, 1, 1);
-			//glClear(GL_COLOR_BUFFER_BIT);
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();

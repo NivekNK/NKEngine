@@ -7,6 +7,7 @@
 
 #ifdef NK_OPENGL
 	#include "Platform/OpenGL/imgui_impl_opengl3.h"
+#elif defined(NK_VULKAN)
 #endif
 
 // TEMPORARY
@@ -18,7 +19,14 @@ namespace nk
 	ImGuiLayer::ImGuiLayer()
 		: Layer("ImGuiLayer")
 	{
-		
+		m_Dispatcher.AddListener<MouseButtonPressedEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonPressedEvent));
+		m_Dispatcher.AddListener<MouseButtonReleasedEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnMouseButtonReleasedEvent));
+		m_Dispatcher.AddListener<MouseMovedEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnMouseMovedEvent));
+		m_Dispatcher.AddListener<MouseScrolledEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnMouseScrolledEvent));
+		m_Dispatcher.AddListener<KeyPressedEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnKeyPressedEvent));
+		m_Dispatcher.AddListener<KeyReleasedEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnKeyReleasedEvent));
+		m_Dispatcher.AddListener<KeyTypedEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnKeyTypedEvent));
+		m_Dispatcher.AddListener<WindowResizeEvent>(NK_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
 	}
 
 	ImGuiLayer::~ImGuiLayer() = default;
@@ -34,6 +42,7 @@ namespace nk
 
 #ifdef NK_OPENGL
         ImGui_ImplOpenGL3_Init("#version 410");
+#elif defined(NK_VULKAN)
 #endif
 	}
 
@@ -54,6 +63,7 @@ namespace nk
 
 #ifdef NK_OPENGL
         ImGui_ImplOpenGL3_NewFrame();
+#elif defined(NK_VULKAN)
 #endif
         ImGui::NewFrame();
 
@@ -63,12 +73,96 @@ namespace nk
         ImGui::Render();
 #ifdef NK_OPENGL
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#elif defined(NK_VULKAN)
 #endif
 	}
 
 	void ImGuiLayer::OnEvent(Event& event)
 	{
-		
+		m_Dispatcher.Dispatch<MouseButtonPressedEvent>(event);
+		m_Dispatcher.Dispatch<MouseButtonReleasedEvent>(event);
+		m_Dispatcher.Dispatch<MouseMovedEvent>(event);
+		m_Dispatcher.Dispatch<MouseScrolledEvent>(event);
+		m_Dispatcher.Dispatch<KeyPressedEvent>(event);
+		m_Dispatcher.Dispatch<KeyReleasedEvent>(event);
+		m_Dispatcher.Dispatch<KeyTypedEvent>(event);
+		m_Dispatcher.Dispatch<WindowResizeEvent>(event);
+	}
+
+	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[event.GetMouseButton()] = true;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[event.GetMouseButton()] = false;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseMovedEvent(MouseMovedEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MousePos = ImVec2(event.GetX(), event.GetY());
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseWheelH += event.GetXOffset();
+		io.MouseWheel += event.GetYOffset();
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+
+		io.AddKeyEvent(ImGuiKey_ModCtrl, (event.GetMods() & GLFW_MOD_CONTROL) != 0);
+		io.AddKeyEvent(ImGuiKey_ModShift, (event.GetMods() & GLFW_MOD_SHIFT) != 0);
+		io.AddKeyEvent(ImGuiKey_ModAlt, (event.GetMods() & GLFW_MOD_ALT) != 0);
+		io.AddKeyEvent(ImGuiKey_ModSuper, (event.GetMods() & GLFW_MOD_SUPER) != 0);
+
+		const ImGuiKey imGuiKey = ImGui_ImplGlfw_KeyToImGuiKey(event.GetKeyCode());
+		io.AddKeyEvent(imGuiKey, true);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		const ImGuiKey imGuiKey = ImGui_ImplGlfw_KeyToImGuiKey(event.GetKeyCode());
+		io.AddKeyEvent(imGuiKey, false);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		if (const int keycode = event.GetKeyCode(); keycode > 0 && keycode < 0x10000)
+			io.AddInputCharacter(static_cast<unsigned>(keycode));
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& event)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.DisplaySize = ImVec2(event.GetWidth(), event.GetHeight());
+		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+		glViewport(0, 0, event.GetWidth(), event.GetHeight());
+
+		return false;
 	}
 
     // HACK: Change to NK Key Codes
