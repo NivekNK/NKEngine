@@ -8,10 +8,15 @@
 #ifdef NK_OPENGL
 	#include "Platform/OpenGL/imgui_impl_opengl3.h"
 #elif defined(NK_VULKAN)
+	#include "Platform/Vulkan/imgui_impl_vulkan.h"
 #endif
 
 // TEMPORARY
-#include <glad/gl.h>
+#ifdef NK_OPENGL
+	#include <glad/gl.h>
+#elif defined(NK_VULKAN)
+	#include "vulkan/vulkan.hpp"
+#endif
 #include <GLFW/glfw3.h>
 
 namespace nk
@@ -43,6 +48,8 @@ namespace nk
 #ifdef NK_OPENGL
         ImGui_ImplOpenGL3_Init("#version 410");
 #elif defined(NK_VULKAN)
+		ImGui_ImplVulkan_InitInfo vulkanInfo{};
+		ImGui_ImplVulkan_Init(&vulkanInfo, );
 #endif
 	}
 
@@ -64,6 +71,7 @@ namespace nk
 #ifdef NK_OPENGL
         ImGui_ImplOpenGL3_NewFrame();
 #elif defined(NK_VULKAN)
+		ImGui_ImplVulkan_NewFrame();
 #endif
         ImGui::NewFrame();
 
@@ -74,6 +82,7 @@ namespace nk
 #ifdef NK_OPENGL
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #elif defined(NK_VULKAN)
+		ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), );
 #endif
 	}
 
